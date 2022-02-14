@@ -115,7 +115,7 @@ resource "aws_instance" "web" {
   tags = {
     Name = "${var.env_prefix}-server"
   }
-    user_data = file(script.sh)
+    user_data = file("script.sh")
 
 }
 
