@@ -15,34 +15,28 @@ data "aws_eks_cluster_auth" "myapp-cluster" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.23.0"
+  version = "17.24.0"
 
   cluster_name = "myapp-eks-cluster"
   cluster_version = "1.21" # k8s version
 
-  subnet_ids = module.myapp-vpc.private_subnets # Array of private subnets Ids where our worker nodes will be deployed
+subnets = module.myapp-vpc.private_subnets # Array of private subnets Ids where our worker nodes will be deployed
   vpc_id = module.myapp-vpc.vpc_id
 
   tags = {
     "enviroment" = "development"
     "application" = "myapp"
   }
-
+ worker_groups = [
+    {
+      name                          = "worker-group-1"
+      instance_type                 = "t2.micro"
+      additional_userdata           = "echo foo bar"
+      # additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
+      asg_desired_capacity          = 2
+    }]
   # self managed EC2 instances  
-  self_managed_node_groups =   { 
-    one = {
-        name = "worker-group-1"
-        instance_type = "t2.micro"
-        max_size = 2 
-        asg_desired_capacity = 2
-    }
-
-    two = {
-        name = "worker-group-2"
-        instance_type = "t2.medium"
-        max_size = 1
-        asg_desired_capacity = 1
-    }    
+  
 
   }  
-}
+

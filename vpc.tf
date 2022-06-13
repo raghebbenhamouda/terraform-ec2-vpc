@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-2"
+  region = "eu-west-3"
 }
 
 variable private_subnets_cidr_blocks {}
